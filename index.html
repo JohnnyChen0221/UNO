@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>UNO</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+  <style type="text/css">
+    .roundbtn{
+    	position:absolute;
+    	width:80px;
+    	height:80px;
+    	border-radius:50%;
+    }
+    #list{
+    	position: fixed;
+    	left: 50%;
+    	margin-left: -50px;
+    	top: 0px;
+    	background-color: gray;
+    	width: 100px;
+    	height:25px;
+    	z-index: 2;
+    	transition: 0.5s;
+    }
+    #list::before, #list::after{
+		content:"";
+		position:absolute;
+		margin-left: -30px;
+		left:50%;
+    }
+    #list::before{
+		bottom: 10px;
+		border-left: 30px solid black;
+		border-right: 30px solid black;
+		border-top: 5px solid transparent;
+		width: 0px;
+		height: 5px;
+    }
+    #list::after{
+		bottom: 0px;
+		border-left: 30px solid transparent;
+		border-right: 30px solid transparent;
+		border-top: 5px solid black;
+		width: 0px;
+		height: 5px;
+    }
+    #list:hover{
+    	height: 120px;
+    	transition: 0.5s;
+    }
+    #list:hover::before{
+		bottom: 15px;
+		border-left: 30px solid transparent;
+		border-right: 30px solid transparent;
+		border-bottom: 5px solid black;
+		width: 0px;
+		height: 5px;
+    }
+    #list:hover::after{
+		bottom: 5px;
+		border-left: 30px solid black;
+		border-right: 30px solid black;
+		border-bottom: 5px solid transparent;
+		width: 0px;
+		height: 0px;
+    }
+    .play{
+    	background:#4CAF50;
+    }
+    .play::before{
+    	content:"";
+    	position:absolute;
+    	margin-left: -15px;
+    	margin-top: -22px;
+    	left:50%;
+    	top:50%;
+    	border-left: 38px solid white;
+    	border-top: 22px solid transparent;
+    	border-bottom: 22px solid transparent;
+    	width: 0;
+    	height: 0;
+    }
+    .stop{
+    	background:#ca2323;
+    }
+    .stop::before{
+    	content:"";
+    	position:absolute;
+    	margin-left: -20px;
+    	margin-top: -20px;
+    	left:50%;
+    	top:50%;
+    	border: solid white;
+    	border-width:20px 20px;
+    }
+    @media screen and (min-width:1050px) {
+	    #background{
+	    	margin-left: -500px;
+	    	left: 50%;
+    	}
+	}
+	@media screen and (min-height:550px) {
+	    #background{
+	    	margin-top: -275px;
+	    	top:50%;
+    	}
+	}
+    #background{
+    	position: absolute;
+    	background-color: black;
+    	width: 1000px;
+      	height:550px;
+      	border-radius: 10%;
+    }
+    .playing{
+    	position: absolute;
+    	bottom: 120px;
+    	height: 10px;
+    	width: 10px;
+    	background-color: red;
+    	visibility: hidden;
+    }
+    .win{
+		position: absolute;
+		height: 50px;
+		left: 50%;
+		margin-left: -50px;
+		width: 100px;
+		background-image:url("winner.png");
+		background-repeat: no-repeat; 
+		background-size: 100px 50px;
+		font-family: verdana;
+		font-weight: bolder; 
+		color: red;
+		text-align: center;
+		vertical-align: middle;
+		line-height: 75px; 
+    }
+    .fail{
+		position: absolute;
+		height: 50px;
+		top:50%;
+		margin-top: -25px;
+		left: 50%;
+		margin-left: -50px;
+		width: 100px;
+		background-image:url("fail.png");
+		background-repeat: no-repeat; 
+		background-size: 100px 50px;
+    }
+    #table{
+		position: absolute;
+		width: 230px;
+		margin-left: -115px;
+		left: 50%;
+		height: 130px;
+		margin-top: -65px;
+		top: 50%;
+		background-color: gray;
+		border-radius: 10%;
+    }
+    #deck{
+    	position: absolute;
+		margin-top: -45px;
+		right: 10%;
+		top: 50%;
+	 	width: 80px;
+	  	height: 90px;
+    }
+    #deck img{
+	 	position: absolute;
+	  	width: 80px;
+	  	height: 90px;
+    }
+    #decktop {
+    	position: absolute;
+		margin-top: -45px;
+		right: 20%;
+		top: 50%;
+	 	width: 60px;
+	  	height: 90px;
+    }
+	#decktop img{
+		position: absolute;
+		width: 60px;
+	  	height: 90px;
+    }
+    #decktop:hover{
+		position: absolute;
+		right: 23%;
+    }
+    #center{
+	 	position: absolute;
+		margin-top: -45px;
+		left: 10%;
+		top: 50%;
+	  	width: 60px;
+	  	height: 90px;
+    }
+    #center img{
+	 	position: absolute;
+	  	width: 60px;
+	  	height: 90px;
+    }
+    .hand{
+	  	position: absolute;
+		height: 90px;
+		width: 260px;
+		display: flex;
+		justify-content: space-between;
+    }
+    .card{
+		height: 90px;
+		width: 60px;
+		margin-right: -55px; 
+    }
+    .card img{
+        width: 60px;
+        height: 90px;
+    }
+    .card:hover > img{
+    	position: absolute;
+        width: 100px;
+        height: 150px;
+        bottom: 30px;
+        z-index: 1;
+    }     
+    #colchooser{
+        position: fixed;
+		width: 220px;
+		height: 220px;
+		margin-top: -110px;
+		margin-left: -110px;
+		top: 50%;
+		left: 50%;
+		visibility: hidden;
+		background-color: white;
+		border-radius: 20%;
+    }
+    .colors{
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        border-radius: 25%; 
+    }
+    
+
+  </style>
+</head>
+<body style="background-color: #00BCD4;">
+  
+  <div id="background">
+  	  <div id="list">
+    	<div id="play-stop" class="roundbtn play" style="margin-left: -40px; left: 50%; bottom: 30px"></div>
+      </div>
+	  <div class="hand" id="playerhand" style="bottom: 5%; left: 50%; margin-left: -135px">
+	  	<div></div><div></div><div id="cardblock0"></div><div></div><div></div>
+	  	<div class="playing" id="playing0"></div>
+	  </div>
+	  <div class="hand" id="auto1hand" style="margin-top: -45px; top: 50%; left: 5%;">
+	  	<div></div><div></div><div id="cardblock1"></div><div></div><div></div>
+	  	<div class="playing" id="playing1"></div>
+	  </div>
+	  <div class="hand" id="auto2hand" style="top: 10%; left: 50%; margin-left: -135px">
+	  	<div></div><div></div><div id="cardblock2"></div><div></div><div></div>
+	  	<div class="playing" id="playing2"></div>
+	  </div>
+	  <div class="hand" id="auto3hand" style="margin-top: -45px; top: 50%; right: 10%;">
+	  	<div></div><div></div><div></div><div id="cardblock3"></div><div></div>
+	  	<div class="playing" id="playing3"></div>
+	  </div>
+	  <div id="table">	
+	  	<div id="center"><img src="UNO.png"></div>
+		<div id="deck"><img src="deck.png"></div>
+		<div id="decktop"><img src="UNO.png"></div>
+	  </div>  
+	  <div id="colchooser">
+	  	<button class="colors" id="red" style="left:0px; top:0px ; background-color: #ff5555"></button>
+	    <button class="colors" id="yellow" style="left:120px; top:0px; background-color: #ffaa00"></button>
+	    <button class="colors" id="green" style="left:0px; top:120px; background-color: #55aa55"></button>
+	    <button class="colors" id="blue" style="left:120px; top:120px; background-color: #5555ff"></button>
+	  </div>
+  </div>
+
+  <script type="text/javascript">
+  var timerspeed = 600;//controlable
+  var timeout = 800;//controlable
+  var timer;//timer
+  var action;//let playing dot flash
+  var cardidmin = 4;//controlable
+  var cardidmax = 111;//controlable
+  var deck = [];//cardid
+  var discards = [];//cardid
+  var play = 0;//the cardid of play(the card which is working now)
+  var pcol = 5;//play's color
+  var pcat = 16;//play's category
+  var drawnum = 1;
+  var autoc = [];//autocard[player][card] (**autocard[0] = player0 handcardnum)
+  var autocol = [];//autocardcolor[player][colornum]
+  var next;//next player
+  var winner = -1;
+  var playerlist = [];//playerlist[next]
+  var reverse = false;
+  var change = 1;
+  var done = true;
+  var newdraw = 0;
+    
+    $("#play-stop").click(function(){
+    	if(this.className == "roundbtn play"){
+			//prepare card deck
+			for (var i = cardidmin; i <= cardidmax; i++) {deck[i-cardidmin]=i;}
+			shuffle(deck);
+			//prepare playerlist
+			for (i = 0; i < 4; i++){playerlist[i]=i;}
+			var cardid;
+			var color;
+			//deal playe card
+			autoc[0] = 0;  
+			for (j = 7; j > 0; j--){
+				autoc[0]++;
+				cardid = draw();
+				if(cardid != -1){
+					//$("#playerhand").append('<div class="card" id='+cardid+'><img src="'+getimg(cardid)+'.png"></div>');
+					$('<div class="card" id='+cardid+'><img src="'+getimg(cardid)+'.png"></div>').insertBefore("#cardblock0");
+				}
+			}
+			//deal auto card 
+			for(i = 3; i > 0; i--){
+				autoc[i]=[];
+				autocol[i]=[0,0,0,0,0];
+				for (j = 7; j > 0; j--){
+					//$("#auto"+i+"hand").append('<div class="card"><img src="UNO.png"></div>');
+					$('<div class="card"><img src="UNO.png"></div>').insertBefore("#cardblock"+i+"");
+					cardid = draw();
+					color = getcol(cardid);
+					if(cardid != -1){
+						autocol[i][color]++;
+						if(color == 4){autoc[i].push(cardid);
+						}else{autoc[i].unshift(cardid);}
+					}
+				}
+			}
+			//start from
+			next = 0;
+			$("#playing"+playerlist[next]+"").css({"visibility":"visible"});
+			done = false;
+			//start timer
+			timer = setInterval(movenext,timerspeed);
+			$("#play-stop").removeClass("play").addClass("stop");//change mode
+		}else{
+			clearInterval(timer);
+			$(".card").remove();
+			$(".win").remove();
+			$(".fail").remove();
+			$(".playing").css({"visibility":"hidden"});
+			$("#table").css({"background-color":"gray"});
+			$("#colchooser").css({"visibility":"hidden"});
+			$("#center img").attr("src","UNO.png");
+			deck.length = 0;
+			discards.length = 0;
+			play = 0;
+			pcol = 5;
+			pcat = 16;
+			drawnum = 1;
+			autoc.length = 0;
+			autocol.lenth = 0;
+			winner = -1;
+			playerlist.length = 0;
+			reverse = false;
+			change = 1;
+			done = true;
+			newdraw = 0;
+			$("#play-stop").removeClass("stop").addClass("play");//change mode
+		}
+    });
+
+    $("#decktop").click(function(){//draw from decktop
+		var cardid;
+		if(done == false){
+		    for(i = 0; i < drawnum; i++){
+			    cardid = draw();
+			    if(cardid != -1){
+			    	autoc[0]++;
+			    	//$("#playerhand").append('<div class="card" id='+cardid+'><img src="'+getimg(cardid)+'.png"></div>');
+			    	$('<div class="card" id='+cardid+'><img src="'+getimg(cardid)+'.png"></div>').insertBefore("#cardblock0");
+			    }
+			}
+			if(pcat == 12 || pcat == 14){
+				pcat = 15;
+				drawnum = 1;
+				done = true;
+			}else{
+				newdraw = cardid;
+				clearInterval(timer);
+      			setTimeout(pause,timeout);
+				done = true;
+			}
+		}
+    });
+        
+    $("#playerhand").on('click','.card',function(){//play card
+        if(done == false || this.id == newdraw){
+	        if(pablility(this.id) == true){
+		        autoc[0]--;
+		        playcard(this.id,0);
+		    	//remove it
+		    	$(this).remove();
+		    	if(pcol != 4){
+		    		if(autoc[0] <= 0){
+		    			var no = 5 - playerlist.length;
+		    			$("#playerhand").append("<div class='win'>No."+no+"</div>");
+		    			winner = 0;
+		    			clearInterval(timer);
+		    		}
+		    		done = true;
+		    	}
+	        }
+	    }
+    });
+
+    $(".colors").click(function(){//colchooser
+    	if(this.id == "red"){pcol = 0;}
+    	if(this.id == "yellow"){pcol = 1;}
+    	if(this.id == "green"){pcol = 2;}
+    	if(this.id == "blue"){pcol = 3;}
+    	$("#colchooser").css({"visibility":"hidden"});
+    	tablecolor(pcol);
+    	if(autoc[0] <= 0){
+		    var no = 5 - playerlist.length;
+		    $("#playerhand").append("<div class='win'>No."+no+"</div>");
+		    winner = 0;
+		    clearInterval(timer);
+		}
+    	done = true;
+    });
+
+	  function movenext(){
+	  	action = (!action);
+    	if(done == true && winner != 0){
+    		//clear newdraw
+    		newdraw = 0;
+			//autoplay
+	    	if(playerlist[next] != 0){autoplayer(playerlist[next]);}
+	    	//close playing
+	    	$("#playing"+playerlist[next]+"").css({"visibility":"hidden"});
+	    	//next player
+	    	if(reverse == false){next += change;
+	    	}else{next -= change;}
+	    	change = 1;
+	    	next = (next + playerlist.length) % playerlist.length;
+	    	//if someone win remove it from playerlist
+	    	if(winner != -1){
+	    		if(next > winner){next -= 1;}
+	    		playerlist.splice(winner,1);
+	    		winner = -1;
+	    	}
+	    	//if player more than one, open playing
+	    	if(playerlist.length > 1){
+		    	$("#playing"+playerlist[next]+"").css({"visibility":"visible"});
+		    	if(playerlist[next] == 0){done = false;}
+	    	}else{
+	    		$("#playerhand").append('<div class="fail"></div>');
+	    		clearInterval(timer);
+	    	}
+		}else{
+			$("#playing0").css({"visibility":(action)?"hidden":"visible"});
+		}  	
+      }
+
+	  function pause(){
+     	timer = setInterval(movenext,800);
+   	  }
+
+      function autoplayer(player){
+      	//try each card to play
+      	for(i = 0; i < autoc[player].length; i++){
+      	  //play one card
+      	  if (pablility(autoc[player][i]) == true){
+		    //play it
+		    playcard(autoc[player][i],player);
+		    //remove card from hand
+		    autoc[player].splice(i,1);
+		    autocol[player][getcol(play)]--;
+        	$("#auto"+player+"hand > .card").first().remove();
+        	//if no card left win
+        	if(autoc[player].length == 0){
+        		var no = 5 - playerlist.length;
+        		$("#auto"+player+"hand").append("<div class='win'>No."+no+"</div>");
+        		winner = next;
+        	}
+      		return 0;
+      	  }
+		}
+		//if no card playable, draw
+		var cardid;
+		for(i = 0; i < drawnum; i++){
+		  cardid = draw();
+			if(cardid != -1){
+			  //$("#auto"+player+"hand").append('<div class="card"><img src="UNO.png"></div>');
+			  $('<div class="card"><img src="UNO.png"></div>').insertBefore("#cardblock"+player+"");
+			  autocol[player][getcol(cardid)]++;
+			  if(getcol(cardid) == 4){autoc[player].push(cardid);
+		      }else{autoc[player].unshift(cardid);}
+			}
+		}
+		// after draw
+		if(pcat == 12 || pcat == 14){pcat = 15;drawnum = 1;
+		}else{
+			if(pablility(cardid) == true){
+				//play it
+			    playcard(cardid,player);
+			    //remove card from hand
+			    autoc[player].splice(i,1);
+			    autocol[player][getcol(play)]--;
+	        	$("#auto"+player+"hand > .card").first().remove();
+			}
+		}
+	    return 0;
+      }
+
+	  function draw(){
+		//when no card in deck add shuffled discards 
+		if(deck.length == 0){
+		  deck = deck.concat(shuffle(discards));
+          discards.length = 0;
+  	    }
+		//if any card in deck  
+		if(deck.length > 0){
+		  //draw one from top
+		  var cardid = deck.shift();
+		  //get card
+		  return cardid;
+		}else{return -1;}
+	  }
+
+      function getimg(idnum){
+        var imgid;
+        var color;
+        var category;
+        if (idnum <= 103 && idnum >= 4) {
+          if(idnum%4 == 0){color = "R"};
+          if(idnum%4 == 1){color = "Y"};
+          if(idnum%4 == 2){color = "G"};
+          if(idnum%4 == 3){color = "B"};
+          category = Math.floor(idnum/8);
+          imgid = ""+color+""+category+"";
+        }else if(idnum <= 111 && idnum >= 104){
+          category = (Math.floor(idnum/4))-13;
+          imgid = ""+category+"";
+        }
+        return imgid;
+      }
+
+      function getcat(idnum){
+        var imgcat;
+        var category;
+        if (idnum <= 103 && idnum >= 4) {
+          category = Math.floor(idnum/8);
+        }else if(idnum <= 111 && idnum >= 104){
+          category = (Math.floor(idnum/4))-13;  
+        }
+        return category;
+      }
+
+      function getcol(idnum){
+        var imgid;
+        var color;
+        if (idnum <= 103 && idnum >= 4) {
+          color =idnum%4;
+        }else if(idnum <= 111 && idnum >= 104){
+          color = 4;
+        }
+        return color;
+      }
+
+
+      function shuffle(array) {
+        for (i = array.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+        }
+        return array;
+      }
+
+      function pablility(cardid){
+        if(
+          play == 0 || getcat(cardid) == 14 ||
+          (pcat >= 0 && pcat <= 11 && (getcol(cardid) == pcol || getcat(cardid) == pcat || getcat(cardid) == 13)) ||
+          (pcat == 12 && getcat(cardid) == 12) ||
+          (pcat == 13 && (getcol(cardid) == pcol || getcat(cardid) == 13)) ||
+          (pcat == 14 && (getcol(cardid) == pcol && getcat(cardid) == 12)) ||
+          (pcat == 15 && (getcol(cardid) == pcol || getcat(cardid) == 12 || getcat(cardid) == 13))
+          ){return true;
+          }else{return false;}
+      } 
+
+      function playcard(cardid,player){
+      	//discard the origin playcard
+		if(play!=0){discards.push(play);}
+		//play this card
+		play = cardid;
+		$("#center img").attr("src",""+getimg(play)+".png");
+		pcat = getcat(play);//category action
+		if(pcat == 10){change = 2;}
+	    if(pcat == 11){if(playerlist.length > 2){reverse = !reverse;}else{change = 2;}}
+	    if(pcat == 12){if(drawnum == 1){drawnum = 2;}else{drawnum += 2;}}
+	    if(pcat == 14){if(drawnum == 1){drawnum = 4;}else{drawnum += 4;}}
+	    pcol = getcol(play);//color action 
+	    tablecolor(pcol);
+	    if (pcol == 4){
+	      if(player == 0){//player0
+	      	$("#colchooser").css({"visibility":"visible"});
+	      	done = false;
+	      }else{pcol = autocolchoose(player);}//auto1,2,3
+	    }
+
+      }
+
+      function autocolchoose(player){
+      	var col = 0;
+      	for(j = 1; j <= 3; j++){
+      	  if(autocol[player][j] > autocol[player][col]){col = j;}
+      	}
+      	tablecolor(col);
+      	return col;
+      }
+
+      function tablecolor(color){
+		if(color == 0){$("#table").css({"background-color":"#ff5555"});}
+		if(color == 1){$("#table").css({"background-color":"#ffaa00"});}
+		if(color == 2){$("#table").css({"background-color":"#55aa55"});}
+		if(color == 3){$("#table").css({"background-color":"#5555ff"});}
+      }
+
+
+  </script>
+
+
+
+</body>
+</html>
