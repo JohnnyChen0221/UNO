@@ -125,7 +125,7 @@
 		left: 50%;
 		margin-left: -50px;
 		width: 100px;
-		background-image:url("winner.png");
+		background-image:url("img/winner.png");
 		background-repeat: no-repeat; 
 		background-size: 100px 50px;
 		font-family: verdana;
@@ -143,7 +143,7 @@
 		left: 50%;
 		margin-left: -50px;
 		width: 100px;
-		background-image:url("fail.png");
+		background-image:url("img/fail.png");
 		background-repeat: no-repeat; 
 		background-size: 100px 50px;
     }
@@ -269,9 +269,9 @@
 	  	<div class="playing" id="playing3"></div>
 	  </div>
 	  <div id="table">	
-	  	<div id="center"><img src="UNO.png"></div>
-		<div id="deck"><img src="deck.png"></div>
-		<div id="decktop"><img src="UNO.png"></div>
+	  	<div id="center"><img src="img/UNO.png"></div>
+		<div id="deck"><img src="img/deck.png"></div>
+		<div id="decktop"><img src="img/UNO.png"></div>
 	  </div>  
 	  <div id="colchooser">
 	  	<button class="colors" id="red" style="left:0px; top:0px ; background-color: #ff5555"></button>
@@ -319,8 +319,8 @@
 				autoc[0]++;
 				cardid = draw();
 				if(cardid != -1){
-					//$("#playerhand").append('<div class="card" id='+cardid+'><img src="'+getimg(cardid)+'.png"></div>');
-					$('<div class="card" id='+cardid+'><img src="'+getimg(cardid)+'.png"></div>').insertBefore("#cardblock0");
+					//$("#playerhand").append('<div class="card" id='+cardid+'><img src="img/'+getimg(cardid)+'.png"></div>');
+					$('<div class="card" id='+cardid+'><img src="img/'+getimg(cardid)+'.png"></div>').insertBefore("#cardblock0");
 				}
 			}
 			//deal auto card 
@@ -328,8 +328,8 @@
 				autoc[i]=[];
 				autocol[i]=[0,0,0,0,0];
 				for (j = 7; j > 0; j--){
-					//$("#auto"+i+"hand").append('<div class="card"><img src="UNO.png"></div>');
-					$('<div class="card"><img src="UNO.png"></div>').insertBefore("#cardblock"+i+"");
+					//$("#auto"+i+"hand").append('<div class="card"><img src="img/UNO.png"></div>');
+					$('<div class="card"><img src="img/UNO.png"></div>').insertBefore("#cardblock"+i+"");
 					cardid = draw();
 					color = getcol(cardid);
 					if(cardid != -1){
@@ -354,7 +354,7 @@
 			$(".playing").css({"visibility":"hidden"});
 			$("#table").css({"background-color":"gray"});
 			$("#colchooser").css({"visibility":"hidden"});
-			$("#center img").attr("src","UNO.png");
+			$("#center img").attr("src","img/UNO.png");
 			deck.length = 0;
 			discards.length = 0;
 			play = 0;
@@ -380,8 +380,8 @@
 			    cardid = draw();
 			    if(cardid != -1){
 			    	autoc[0]++;
-			    	//$("#playerhand").append('<div class="card" id='+cardid+'><img src="'+getimg(cardid)+'.png"></div>');
-			    	$('<div class="card" id='+cardid+'><img src="'+getimg(cardid)+'.png"></div>').insertBefore("#cardblock0");
+			    	//$("#playerhand").append('<div class="card" id='+cardid+'><img src="img/'+getimg(cardid)+'.png"></div>');
+			    	$('<div class="card" id='+cardid+'><img src="img/'+getimg(cardid)+'.png"></div>').insertBefore("#cardblock0");
 			    }
 			}
 			if(pcat == 12 || pcat == 14){
@@ -495,8 +495,8 @@
 		for(i = 0; i < drawnum; i++){
 		  cardid = draw();
 			if(cardid != -1){
-			  //$("#auto"+player+"hand").append('<div class="card"><img src="UNO.png"></div>');
-			  $('<div class="card"><img src="UNO.png"></div>').insertBefore("#cardblock"+player+"");
+			  //$("#auto"+player+"hand").append('<div class="card"><img src="img/UNO.png"></div>');
+			  $('<div class="card"><img src="img/UNO.png"></div>').insertBefore("#cardblock"+player+"");
 			  autocol[player][getcol(cardid)]++;
 			  if(getcol(cardid) == 4){autoc[player].push(cardid);
 		      }else{autoc[player].unshift(cardid);}
@@ -600,7 +600,7 @@
 		if(play!=0){discards.push(play);}
 		//play this card
 		play = cardid;
-		$("#center img").attr("src",""+getimg(play)+".png");
+		$("#center img").attr("src","img/"+getimg(play)+".png");
 		pcat = getcat(play);//category action
 		if(pcat == 10){change = 2;}
 	    if(pcat == 11){if(playerlist.length > 2){reverse = !reverse;}else{change = 2;}}
